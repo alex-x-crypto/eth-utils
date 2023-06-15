@@ -7,8 +7,11 @@ import (
 	"math/big"
 )
 
-func SignTx(signer *ecdsa.PrivateKey, chainId *big.Int, nonce uint64,
-	to *common.Address, value *big.Int, data []byte, maxPriorityFeePerGas, maxFeePerGas *big.Int) (*types.Transaction, error) {
+func SignTx(
+	signer *ecdsa.PrivateKey, chainId *big.Int, nonce uint64,
+	to *common.Address, value *big.Int, data []byte,
+	maxPriorityFeePerGas, maxFeePerGas *big.Int, gasLimit uint64,
+) (*types.Transaction, error) {
 	baseTx := &types.DynamicFeeTx{
 		ChainID: chainId,
 		To:      to,
@@ -18,7 +21,8 @@ func SignTx(signer *ecdsa.PrivateKey, chainId *big.Int, nonce uint64,
 
 		GasTipCap: maxPriorityFeePerGas,
 		GasFeeCap: maxFeePerGas,
-		//Gas:       gas,
+
+		Gas: gasLimit,
 	}
 
 	tx, err := types.SignNewTx(
